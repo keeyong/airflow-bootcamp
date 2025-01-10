@@ -1,25 +1,22 @@
-## How to run a DAG inside Docker Container's command line
+## Docker Container 안에서 동작하는 Airflow 커맨드 라인에서 DAG 실행 방법
 
-1. Open a terminal & move to the same folder where you cloned data226 repo
-
-2. Change the current folder to week8/airflow
- - The sub-folders (“dags”) are in sync with the container
- - In Cloud Composer, Cloud Storage was used to sync
-
-3. Look for airflow-worker's ID and get the first 3 characters ("7e2" in this example): 
+1. Airflow가 docker로 실행 중임을 먼저 확인
+2. 먼저 터미널을 실행
+3. docker ps 명령을 실행
+4. 위의 명령 결과에서 airflow-worker의 ID를 찾아 처음 3글자만 기억 (아래의 예에서는 "7e2"): 
 ```
-docker ps  # look for airflow-worker
+docker ps
 
 CONTAINER ID   IMAGE                  COMMAND                  CREATED        STATUS                  PORTS                    NAMES
 7e26f0e7a183   apache/airflow:2.9.1   "/usr/bin/dumb-init …"   26 hours ago   Up 26 hours (healthy)   8080/tcp                 learn-airflow-airflow-worker-1
 ```
 
-4. Log in the Airflow Worker's Docker Container 
+5. 아래 명령을 실행해서 Airflow Worker Docker Container안으로 로그인 
 ```
-docker exec -it XXX sh # log into the worker container
+docker exec -it 7e2 sh
 ```
 
-5. Run different Airflow commands
+6. 여기서 다양한 Airflow 명령을 실행해보기
 ```
 (airflow) airflow dags list
 (airflow) airflow tasks list YfinanceToSnowflake 
