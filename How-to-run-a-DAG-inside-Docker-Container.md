@@ -10,7 +10,7 @@ docker ps
 ```
 CONTAINER ID   IMAGE                  COMMAND                  CREATED          STATUS                    PORTS                    NAMES
 b9ab5916f962   apache/airflow:2.9.2   "/usr/bin/dumb-init …"   6 minutes ago    Up 5 minutes (healthy)    0.0.0.0:8081->8080/tcp   airflow-beginner-airflow-1
-5bdc1f568ba3   postgres:13            "docker-entrypoint.s…"   10 minutes ago   Up 10 minutes (healthy)   5432/tcp                 airflow-beginner-postgres-1
+7e2c1f568ba3   postgres:13            "docker-entrypoint.s…"   10 minutes ago   Up 10 minutes (healthy)   5432/tcp                 airflow-beginner-postgres-1
 ```
 
 5. 아래 명령을 실행해서 Airflow Worker Docker Container안으로 로그인 
