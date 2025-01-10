@@ -1,4 +1,4 @@
-## LocalExecutor를 사용하게 Airflow를 Docker Container로 실행하기
+## LocalExecutor 사용 Airflow를 Docker Container로 실행하기
 
 이 방식은 단 2개의 컨테이너만 필요로 하기에 메모리 등의 자원을 훨씬 더 필요로 한다. 
 
