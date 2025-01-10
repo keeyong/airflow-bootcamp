@@ -1,45 +1,26 @@
-## How to Run Airflow via Docker Compose (With LocalExecutor)
+## LocalExecutor를 사용하게 Airflow를 Docker Container로 실행하기
 
-This will only 2 containers so it uses far less memory. After making sure the Docker Desktop is up and running, open a terminal (or CMD in the case of Windows) and move to a folder of your choice.
+이 방식은 단 2개의 컨테이너만 필요로 하기에 메모리 등의 자원을 훨씬 더 필요로 한다. 
 
-1. Clone the sjsu-data226 repo to the folder
+1. Docker Desktop이 실행 중임을 먼저 확인한다.
+2. 다음에 터미널을 연다 (윈도우라면 CMD 혹은 PowerShell)
+3. 적당한 폴더로 이동한다.
+4. 다음으로 강의 GitHub Repo를 클론
+``` 
+git clone https://github.com/keeyong/airflow-beginner.git
 ```
-git clone https://github.com/keeyong/sjsu-data226.git
+git이 설치되어 있지 않다면 설치 후 실행하던지 [압축파일](https://github.com/keeyong/airflow-beginner/archive/refs/heads/main.zip)을 다운로드 받고 압축을 풀 것
+5. 다음으로 방금 다운로드받은 GitHub repo 폴더 안으로 이동
 ```
-If you don't have git, you can just download it at https://github.com/keeyong/sjsu-data226/archive/refs/heads/main.zip. After unzipping it, you can follow the steps below
+cd airflow-beginner
+```
+6. 다음으로 Airflow 환경을 초기화
+```
+docker compose -f docker-compose.yaml up airflow-init
+```
+7. 다음으로 Airflow 서비스를 실행
+```
+docker compose -f docker-compose.yaml up
+```
+8. 조금 기다린 후에 http://localhost:8081를 방문. ID:PW로 airflow:airflow를 입력
 
-2. Change the current directory to sjsu-data226/week8/airflow
-```
-cd sjsu-data226/week8/airflow
-```
-3. First initialize Airflow environment
-```
-docker compose -f docker-compose-min.yaml up airflow-init
-```
-4. Next run the Airflow service
-```
-docker compose -f docker-compose-min.yaml up
-```
-5. Wait some time, then visit http://localhost:8081 and log in (Use ID:PW of airflow:airflow)
-
-Set up Connections (snowflake_conn for example) and Variables accordingly 
-
-7. Now let's log in to airflow docker container
- - For that end, run "docker ps" command and get the container ID of airflow-airflow-1. In the following case, it is "a9fc54d4b0b3"
-```
-docker ps  # look for airflow-1
-CONTAINER ID   IMAGE                  COMMAND                  CREATED          STATUS                             PORTS                    NAMES
-a9fc54d4b0b3   apache/airflow:2.9.1   "/usr/bin/dumb-init …"   9 minutes ago    Up 21 seconds (health: starting)   0.0.0.0:8081->8080/tcp   airflow-airflow-1
-c9ca72c25eb4   postgres:13            "docker-entrypoint.s…"   30 minutes ago   Up 33 seconds (healthy)            5432/tcp                 airflow-postgres-1
-```
- - Now run "docker exec -it" command with the ID to log in
-```
-docker exec -it a9fc54d4b0b3 sh
-(airflow)
-```
-8. Let's run a few Airflow commands
-```
-(airflow)airflow dags list
-(airflow)airflow tasks list HelloWorld
-(airflow)airflow dags test HelloWorld 2024-10-10
-```
