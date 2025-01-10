@@ -3,12 +3,13 @@
 1. Airflow가 docker로 실행 중임을 먼저 확인
 2. 먼저 터미널을 실행
 3. docker ps 명령을 실행
-4. 위의 명령 결과에서 airflow-worker의 ID를 찾아 처음 3글자만 기억 (아래의 예에서는 "7e2"): 
+4. 위의 명령 결과에서 airflow-airflow-1의 ID를 찾아 처음 3글자만 기억 (아래의 예에서는 "7e2"): 
 ```
-docker ps
+docker ps  # look for airflow-1
 
-CONTAINER ID   IMAGE                  COMMAND                  CREATED        STATUS                  PORTS                    NAMES
-7e26f0e7a183   apache/airflow:2.9.1   "/usr/bin/dumb-init …"   26 hours ago   Up 26 hours (healthy)   8080/tcp                 learn-airflow-airflow-worker-1
+CONTAINER ID   IMAGE                  COMMAND                  CREATED          STATUS                             PORTS                    NAMES
+a9fc54d4b0b3   apache/airflow:2.9.2   "/usr/bin/dumb-init …"   9 minutes ago    Up 21 seconds (health: starting)   0.0.0.0:8081->8080/tcp   airflow-airflow-1
+c9ca72c25eb4   postgres:13            "docker-entrypoint.s…"   30 minutes ago   Up 33 seconds (healthy)            5432/tcp                 airflow-postgres-1
 ```
 
 5. 아래 명령을 실행해서 Airflow Worker Docker Container안으로 로그인 
