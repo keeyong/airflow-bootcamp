@@ -22,5 +22,5 @@ docker compose -f docker-compose.yaml up airflow-init
 ```
 docker compose -f docker-compose.yaml up
 ```
-8. 조금 기다린 후에 http://localhost:8081를 방문. ID:PW로 airflow:airflow를 입력
+8. 조금 기다린 후에 [http://localhost:8081](http://localhost:8081)를 방문. ID:PW로 airflow:airflow를 입력
 
