@@ -1,0 +1,8 @@
+*.ipynb
+test_*.py
+*.swp
+*.bak
+*.log
+*.csv
+*.md
+*.json
