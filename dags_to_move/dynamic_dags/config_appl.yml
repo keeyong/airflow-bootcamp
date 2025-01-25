@@ -1,0 +1,4 @@
+dag_id: 'APPL'
+schedule: '@daily'
+catchup: False
+symbol: 'APPL'
