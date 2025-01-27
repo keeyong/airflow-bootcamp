@@ -1,4 +1,4 @@
-# Airflow Bootcamp
+# Airflow로 만들어보는 데이터 파이프라인 Bootcamp
 
 인프런에 만든 Airflow 강의에 있는 코드를 모아놓은 Repository입니다.
 
