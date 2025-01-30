@@ -7,12 +7,12 @@
 3. 적당한 폴더로 이동한다.
 4. 다음으로 강의 GitHub Repo를 클론
 ``` 
-git clone https://github.com/keeyong/airflow-beginner.git
+git clone https://github.com/keeyong/airflow-bootcamp.git
 ```
-git이 설치되어 있지 않다면 설치 후 실행하던지 [압축파일](https://github.com/keeyong/airflow-beginner/archive/refs/heads/main.zip)을 다운로드 받고 압축을 풀 것
+git이 설치되어 있지 않다면 설치 후 실행하던지 [압축파일](https://github.com/keeyong/airflow-bootcamp/archive/refs/heads/main.zip)을 다운로드 받고 압축을 풀 것
 5. 다음으로 방금 다운로드받은 GitHub repo 폴더 안으로 이동
 ```
-cd airflow-beginner
+cd airflow-bootcamp
 ```
 6. 다음으로 Airflow 환경을 초기화
 ```
@@ -23,5 +23,5 @@ docker compose -f docker-compose.yaml up airflow-init
 docker compose -f docker-compose.yaml up
 ```
 8. 조금 기다린 후에 [http://localhost:8081](http://localhost:8081)를 방문. ID:PW로 airflow:airflow를 입력
-9. Docker Container안에서 Airflow를 커맨드라인 상에서 실행하고 싶다면 [다음 문서](https://github.com/keeyong/airflow-beginner/blob/main/How-to-run-a-DAG-inside-Docker-Container.md)를 참고
+9. Docker Container안에서 Airflow를 커맨드라인 상에서 실행하고 싶다면 [다음 문서](https://github.com/keeyong/airflow-bootcamp/blob/main/How-to-run-a-DAG-inside-Docker-Container.md)를 참고
 
