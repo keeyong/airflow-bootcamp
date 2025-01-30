@@ -23,5 +23,5 @@ docker compose -f docker-compose.yaml up airflow-init
 docker compose -f docker-compose.yaml up
 ```
 8. 조금 기다린 후에 [http://localhost:8081](http://localhost:8081)를 방문. ID:PW로 airflow:airflow를 입력
-9. Docker Container안에서 Airflow를 커맨드라인 상에서 실행하고 싶다면 [다음 문서](https://github.com/keeyong/airflow-bootcamp/blob/main/How-to-run-a-DAG-inside-Docker-Container.md)를 참고
+9. Docker Container안에서 Airflow를 커맨드라인 상에서 실행하고 싶다면 [다음 문서](https://github.com/keeyong/airflow-bootcamp/blob/main/docs/How-to-run-a-DAG-inside-Docker-Container.md)를 참고
 
