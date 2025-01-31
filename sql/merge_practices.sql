@@ -2,14 +2,14 @@
 
 -- Creating the target table
 CREATE OR REPLACE TABLE target_table (
-    id INT,
+    id INT PRIMARY KEY,
     name STRING,
     value INT
 );
 
 -- Creating the staging table with new data
 CREATE OR REPLACE TABLE staging_table (
-    id INT,
+    id INT PRIMARY KEY,
     name STRING,
     value INT
 );
