@@ -21,5 +21,4 @@ with DAG(
 ) as dag:
 
     # run two tasks in sequence
-    print_hello()
-    print_goodbye()
+    print_hello() >> print_goodbye()
