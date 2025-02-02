@@ -60,11 +60,11 @@ def load(cur, records, target_table):
 @task
 def etl():
     csv_url = Variable.get("country_capital_url")
-    conn = return_snowflake_conn()
+    cur = return_snowflake_conn()
 
     data = extract(csv_url)
     lines = transform(data)
-    load(conn, lines, target_table)
+    load(cur, lines, target_table)
 
 
 with DAG(
