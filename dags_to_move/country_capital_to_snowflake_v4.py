@@ -87,7 +87,7 @@ def transform_load():
         cur.execute(copy_query)
 
         # 제대로 복사되었는지 레코드수 계산
-        cur.execute("SELECT COUNT(1) FROM country_capital")
+        cur.execute(f"SELECT COUNT(1) FROM {target_table}")
         row = cur.fetchone()
         if row[0] <= 0:
             raise Exception("The number of records is ZERO")
