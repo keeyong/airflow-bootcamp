@@ -98,9 +98,9 @@ def transform_load(target_schema, target_table):
         """)
 
         # staging table을 target_table과 동일한 스키마로 생성
-        # 여기서 중요한 포인트는 CREATE OR REPLACE가 사용되어야 한다는 점
+        # 여기서 중요한 포인트는 CREATE TEMPORARY가 사용되어야 한다는 점
         cur.execute(f"""
-          CREATE OR REPLACE TABLE {staging_table} LIKE {target_table};
+          CREATE TEMPORARY TABLE {staging_table} LIKE {target_table};
         """)
 
         # 먼저 staging 테이블의 내용을 채운다. COPY INTO 사용
