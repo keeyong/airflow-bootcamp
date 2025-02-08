@@ -87,7 +87,6 @@ def transform_load():
                 FIELD_OPTIONALLY_ENCLOSED_BY = '"'
                 SKIP_HEADER = 1
             )
-            FORCE = TRUE;
         """
         cur.execute(copy_query)
 
