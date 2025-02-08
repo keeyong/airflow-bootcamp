@@ -60,6 +60,8 @@ def transform_load():
     target_stage = f"@%{target_table}"
     # extract에서 저장한 파일 읽기
     file_path = get_file_path(get_current_context())
+    # file_path에서 파일 이름만 추출
+    file_name = os.path.basename(file_path)
 
     try:
         cur = return_snowflake_conn()
@@ -73,10 +75,13 @@ def transform_load():
         # 보통 이때 파일은 압축이 됨 (GZIP 등) 
         cur.execute(f"PUT file://{file_path} {target_stage};")
 
+        # cur.execute(f"LIST {target_stage};")
+        # print(cur.fetchall())
+
         # Stage로부터 해당 테이블로 벌크 업데이트
         copy_query = f"""
             COPY INTO {target_table}
-            FROM {target_stage}  -- Internal table stage를 사용하는 경우 이 라인은 스킵 가능
+            FROM {target_stage}/{file_name}  -- Internal table stage를 사용하는 경우 이 라인은 스킵 가능
             FILE_FORMAT = (
                 TYPE = 'CSV'
                 FIELD_OPTIONALLY_ENCLOSED_BY = '"'
@@ -91,12 +96,16 @@ def transform_load():
         row = cur.fetchone()
         if row[0] <= 0:
             raise Exception("The number of records is ZERO")
+        else:
+            print(row[0])
 
         cur.execute("COMMIT;")
     except Exception as e:
         cur.execute("ROLLBACK;")
         raise e
     finally:
+        # 스테이지에 올린 파일을 삭제
+        cur.execute(f"REMOVE {target_stage}/{file_name}")
         cur.close()
 
 
@@ -105,6 +114,7 @@ with DAG(
     start_date = datetime(2025,1,10),
     catchup=False,
     tags=['ETL'],
+    max_active_runs=1,
     schedule = '30 3 * * *'
 ) as dag:
 
