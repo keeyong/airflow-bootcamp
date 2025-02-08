@@ -72,9 +72,7 @@ def transform_load(target_schema, target_table):
                 VALUES (stage.country, stage.capital);
         """
         cur.execute(upsert_sql)
-        cur.execute("COMMIT;")
     except Exception as e:
-        cur.execute("ROLLBACK;")
         raise e
     finally:
         cur.close()
