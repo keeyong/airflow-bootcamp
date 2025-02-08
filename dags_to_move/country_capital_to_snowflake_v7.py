@@ -14,23 +14,12 @@ import requests
 import snowflake.connector
 from helpers import util
 
-"""
-CREATE STAGE my_s3_stage
-  URL = 's3://my-bucket/my-folder/'
-  CREDENTIALS = (
-    AWS_KEY_ID = 'YOUR_AWS_ACCESS_KEY_ID'
-    AWS_SECRET_KEY = 'YOUR_AWS_SECRET_ACCESS_KEY'
-  )
-  FILE_FORMAT = (
-    TYPE = CSV
-    FIELD_DELIMITER = ','
-    SKIP_HEADER = 1
-    NULL_IF = ('\\N', 'NULL')  -- NULL 처리 규칙 등 원하는 옵션
-  );
-"""
 
-
-def populate_table_via_s3_stage(cur, table, file_path, aws_conn_id, s3_bucket_name, s3_key):
+def populate_table_via_s3_stage(cur, table, aws_conn_id, s3_bucket_name, s3_key):
+    """
+     - s3_bucket_name을 바탕으로 External Stage를 생성하고 (이때 액세스 권한 정보는 aws_conn_id를 통해 취득)
+     - COPY INTO를 external stage 밑의 s3_key 대상으로 실행하여 table으로 레코드 업로드
+    """
     
     s3_hook = S3Hook(aws_conn_id=aws_conn_id)
     creds = s3_hook.get_credentials()
@@ -48,7 +37,10 @@ def populate_table_via_s3_stage(cur, table, file_path, aws_conn_id, s3_bucket_na
     cur.execute(copy_sql)
 
 
-def load_to_s3(aws_conn_id, file_path, bucket_name, key):  
+def load_to_s3(aws_conn_id, file_path, bucket_name, key):
+    """
+     - aws_conn_id 커넥션의 액세스 권한을 바탕으로 S3://bucket_name/key 위치에 file_path가 가리키는 파일을 업로드
+    """
 
     s3_hook = S3Hook(aws_conn_id=aws_conn_id)
         
@@ -110,7 +102,6 @@ def transform_load(target_schema, target_table, s3_bucket_name):
         populate_table_via_s3_stage(
             cur,
             staging_table,
-            file_path,
             "aws_connection",
             s3_bucket_name,
             file_name       # s3 버킷내 파일의 위치
