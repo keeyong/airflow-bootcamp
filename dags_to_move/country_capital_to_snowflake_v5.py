@@ -40,6 +40,8 @@ def populate_table_via_stage(cur, table, file_path):
     """
 
     table_stage = f"@%{table}"  # 테이블 스테이지 사용
+    # file_path에서 파일 이름만 추출
+    file_name = os.path.basename(file_path)
 
     # Internal table stage에 파일을 복사
     # 보통 이때 파일은 압축이 됨 (GZIP 등)
@@ -84,8 +86,6 @@ def transform_load(target_schema, target_table):
 
     # extract에서 저장한 파일 읽기
     file_path = get_file_path(tmp_dir, get_current_context())
-    # file_path에서 파일 이름만 추출
-    file_name = os.path.basename(file_path)
 
     try:
         cur = return_snowflake_conn()
@@ -126,6 +126,8 @@ def transform_load(target_schema, target_table):
         cur.execute("ROLLBACK;")
         raise e
     finally:
+        # file_path에서 파일 이름만 추출
+        file_name = os.path.basename(file_path)
         # 스테이지에 올린 파일을 삭제
         table_stage = f"@%{target_table}"
         cur.execute(f"REMOVE {table_stage}/{file_name}")
