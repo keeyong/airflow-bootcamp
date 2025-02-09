@@ -54,7 +54,6 @@ def populate_table_via_stage(cur, table, file_path):
             FIELD_OPTIONALLY_ENCLOSED_BY = '"'
             SKIP_HEADER = 1
         )
-        FORCE = TRUE;
     """
     cur.execute(copy_query)
 
@@ -81,10 +80,12 @@ def transform_load(target_schema, target_table):
 
     # STAGE를 사용해 복사시 DB와 Schema를 테이블 이름 앞에 지정불가
     staging_table = f"temp_{target_table}"
-    # extract에서 저장한 파일 읽기
     tmp_dir = "/tmp"
 
+    # extract에서 저장한 파일 읽기
     file_path = get_file_path(tmp_dir, get_current_context())
+    # file_path에서 파일 이름만 추출
+    file_name = os.path.basename(file_path)
 
     try:
         cur = return_snowflake_conn()
@@ -98,7 +99,7 @@ def transform_load(target_schema, target_table):
         """)
 
         # staging table을 target_table과 동일한 스키마로 생성
-        # 여기서 중요한 포인트는 CREATE TEMPORARY가 사용되어야 한다는 점
+        # 여기서 중요한 포인트는 CREATE OR REPLACE가 사용되어야 한다는 점
         cur.execute(f"""
           CREATE TEMPORARY TABLE {staging_table} LIKE {target_table};
         """)
@@ -125,6 +126,9 @@ def transform_load(target_schema, target_table):
         cur.execute("ROLLBACK;")
         raise e
     finally:
+        # 스테이지에 올린 파일을 삭제
+        table_stage = f"@%{target_table}"
+        cur.execute(f"REMOVE {table_stage}/{file_name}")
         cur.close()
 
 
@@ -133,6 +137,7 @@ with DAG(
     start_date = datetime(2025,1,10),
     catchup=False,
     tags=['ETL'],
+    max_active_runs=1,
     schedule = '0 4 * * *'
 ) as dag:
     target_table = "country_capital"
