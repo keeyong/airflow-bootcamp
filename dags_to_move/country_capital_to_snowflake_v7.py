@@ -3,14 +3,12 @@ from airflow.decorators import task
 from airflow.models import Variable
 from airflow.operators.python import get_current_context
 from airflow.providers.amazon.aws.hooks.s3 import S3Hook
-from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
 
 from datetime import datetime
 from datetime import timedelta
 
 import os
 import requests
-import snowflake.connector
 from helpers import util
 
 
