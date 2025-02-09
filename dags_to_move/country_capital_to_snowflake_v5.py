@@ -131,7 +131,6 @@ def transform_load(target_schema, target_table):
             print(row[0])
 
     except Exception as e:
-        cur.execute("ROLLBACK;")
         raise e
     finally:
         # file_path에서 파일 이름만 추출
