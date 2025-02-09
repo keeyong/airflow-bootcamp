@@ -48,7 +48,7 @@ def populate_table_via_stage(cur, table, file_path):
     # Stage로부터 해당 테이블로 벌크 업데이트
     copy_query = f"""
         COPY INTO {table}
-        FROM {table_stage}  -- Internal table stage를 사용하는 경우 이 라인은 스킵 가능
+        FROM {table_stage}/{file_name}
         FILE_FORMAT = (
             TYPE = 'CSV'
             FIELD_OPTIONALLY_ENCLOSED_BY = '"'
