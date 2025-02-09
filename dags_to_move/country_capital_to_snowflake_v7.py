@@ -14,6 +14,22 @@ import snowflake.connector
 from helpers import util
 
 
+def load_to_s3(aws_conn_id, file_path, bucket_name, key):
+    """
+     - aws_conn_id 커넥션의 액세스 권한을 바탕으로 S3://bucket_name/key 위치에 file_path가 가리키는 파일을 업로드
+    """
+
+    s3_hook = S3Hook(aws_conn_id=aws_conn_id)
+        
+    # S3로 파일 업로드
+    s3_hook.load_file(
+        filename=file_path,
+        key=key,
+        bucket_name=bucket_name,
+        replace=True
+    )
+
+
 def populate_table_via_s3_stage(cur, table, aws_conn_id, s3_bucket_name, s3_key):
     """
      - s3_bucket_name을 바탕으로 External Stage를 생성하고 (이때 액세스 권한 정보는 aws_conn_id를 통해 취득)
@@ -34,22 +50,6 @@ def populate_table_via_s3_stage(cur, table, aws_conn_id, s3_bucket_name, s3_key)
         FILE_FORMAT = (type='CSV' skip_header=1 FIELD_OPTIONALLY_ENCLOSED_BY='"');
     """
     cur.execute(copy_sql)
-
-
-def load_to_s3(aws_conn_id, file_path, bucket_name, key):
-    """
-     - aws_conn_id 커넥션의 액세스 권한을 바탕으로 S3://bucket_name/key 위치에 file_path가 가리키는 파일을 업로드
-    """
-
-    s3_hook = S3Hook(aws_conn_id=aws_conn_id)
-        
-    # S3로 파일 업로드
-    s3_hook.load_file(
-        filename=file_path,
-        key=key,
-        bucket_name=bucket_name,
-        replace=True
-    )
 
 
 @task
