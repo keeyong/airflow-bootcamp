@@ -14,9 +14,16 @@ import snowflake.connector
 from helpers import util
 
 
-def load_to_s3(aws_conn_id, file_path, bucket_name, key):
+def load_to_s3(aws_conn_id, file_path, s3_bucket_name, s3_key):
     """
-     - aws_conn_id 커넥션의 액세스 권한을 바탕으로 S3://bucket_name/key 위치에 file_path가 가리키는 파일을 업로드
+     - aws_conn_id 커넥션의 액세스 권한을 바탕으로 S3://s3_bucket_name/s3_key 위치에 file_path가 가리키는 파일을 업로드
+     - 예를 들어 이렇게 호출 가능:
+       load_to_S3(
+         "aws_connection",
+         "/tmp/country_capital_20250207.csv",
+         "airflow-bootcamp-test-bucket",
+         "country_capital_20250207.csv"
+       )
     """
 
     s3_hook = S3Hook(aws_conn_id=aws_conn_id)
@@ -24,8 +31,8 @@ def load_to_s3(aws_conn_id, file_path, bucket_name, key):
     # S3로 파일 업로드
     s3_hook.load_file(
         filename=file_path,
-        key=key,
-        bucket_name=bucket_name,
+        key=s3_key,
+        bucket_name=s3_bucket_name,
         replace=True
     )
 
