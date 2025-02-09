@@ -122,6 +122,15 @@ def transform_load(target_schema, target_table):
                 VALUES (stage.country, stage.capital);
         """
         cur.execute(upsert_sql)
+
+        # 제대로 복사되었는지 레코드수 계산
+        cur.execute(f"SELECT COUNT(1) FROM {target_table}")
+        row = cur.fetchone()
+        if row[0] <= 0:
+            raise Exception("The number of records is ZERO")
+        else:
+            print(row[0])
+
     except Exception as e:
         cur.execute("ROLLBACK;")
         raise e
