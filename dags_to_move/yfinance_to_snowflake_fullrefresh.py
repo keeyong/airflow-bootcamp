@@ -6,16 +6,19 @@ from airflow.operators.python import get_current_context
 from datetime import datetime, timedelta
 from helpers import util
 
+import logging
+import os
 import pandas as pd
 import pytz
-import requests
 import yfinance as yf
 
 
 @task
 def extract(symbol, debug=True):
-    data = yf.download(symbol, start="2024-01-01")
-    data.reset_index(inplace=True, names=['Date'])
+    data = yf.download(symbol)
+    # 'symbol' 컬럼을 추가하고 모든 행에 symbol 값 할당
+    data['symbol'] = symbol
+
     # symbol 하나만 다루기에 ticker 레벨 제거
     data.columns = data.columns.droplevel(1)
     if debug:
@@ -23,13 +26,14 @@ def extract(symbol, debug=True):
 
     tmp_dir = Variable.get("data_dir", "/tmp/")
     file_path = util.get_file_path(tmp_dir, symbol, get_current_context())
-    data.to_csv(file_path, index=False)  # 데이터를 CSV로 저장
+    data.to_csv(file_path)  # 데이터를 CSV로 저장
+
     return file_path  # 파일 경로만 반환
 
 
 @task
-def load(file_path, symbol, schema, table):
-    tmp_dir = Variables.get("data_dir", "/tmp/")
+def load(symbol, schema, table):
+    tmp_dir = Variable.get("data_dir", "/tmp/")
     file_path = util.get_file_path(tmp_dir, symbol, get_current_context())
 
     cur = util.return_snowflake_conn("snowflake_conn")
@@ -52,22 +56,28 @@ def load(file_path, symbol, schema, table):
         cur.execute("ROLLBACK;")
         raise e
     finally:
+        # file_path에서 파일 이름만 추출
+        file_name = os.path.basename(file_path)
+        # 스테이지에 올린 파일을 삭제
+        table_stage = f"@%{table}"
+        cur.execute(f"REMOVE {table_stage}/{file_name}")
         # 연결 닫기
         cur.close()
 
 
 with DAG(
     dag_id='YfinanceToSnowflake_fullrefresh',
-    description="Business Owner: xyz, Copy Apple stock info to Snowflake",
+    description="Business Owner: xyz, Copy NVDA stock info to Snowflake",
     start_date=datetime(2025,1,14),
     catchup=False,
     tags=['ETL', 'fullrefresh'],
+    max_active_runs=1,
     schedule = '30 1 * * *'
 ) as dag:
 
     schema = "raw_data"
     table = "stock_price"
-    symbol = "AAPL"
+    symbol = "NVDA"
 
-    file_path = extract(symbol)
+    extract(symbol)
     load(file_path, symbol, schema, table)
