@@ -67,6 +67,11 @@ def load_to_snowflake(schema, table):
         cur.execute("ROLLBACK;")
         raise e
     finally:
+        # file_path에서 파일 이름만 추출
+        file_name = os.path.basename(file_path)
+        # 스테이지에 올린 파일을 삭제
+        table_stage = f"@%{table}"
+        cur.execute(f"REMOVE {table_stage}/{file_name}")
         # 연결 닫기
         cur.close()
 
