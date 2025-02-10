@@ -15,7 +15,7 @@ import yfinance as yf
 def extract(symbol, debug=True):
 
     # Airflow에게 어느 날짜의 데이터를 읽을지 문의
-    date_to_process = str(util.get_logical_date(get_current_context()))[:10]
+    date_to_process = str(get_current_context()['logical_date'])[:10]
     following_day = util.get_next_day(date_to_process)   # 그 다음날 계산
 
     if debug:
@@ -47,7 +47,8 @@ def extract(symbol, debug=True):
 def load(symbol, schema, table):
     cur = util.return_snowflake_conn("snowflake_conn")
 
-    date_to_process = str(util.get_logical_date(get_current_context()))[:10]
+    date_to_process = str(get_current_context()['logical_date'])[:10]
+    
     tmp_dir = Variable.get("data_dir", "/tmp/")
     file_path = util.get_file_path(tmp_dir, symbol, get_current_context())
 
