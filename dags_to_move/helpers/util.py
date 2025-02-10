@@ -52,16 +52,13 @@ def populate_table_via_stage(cur, table, file_path):
 
 def get_next_day(date_str):
     """
-    Given a date string in 'YYYY-MM-DD' format, returns the next day as a string in the same format.
+    'YYYY-MM-DD' 형식의 날짜 문자열이 주어지면, 동일한 형식의 문자열로 다음 날짜를 반환
     """
-    # Convert the string date to a datetime object
+    # 먼저 date_str을 datetime 객체로 변환
     date_obj = datetime.strptime(date_str, "%Y-%m-%d")
 
-    # Add one day using timedelta
-    next_day = date_obj + timedelta(days=1)
-
-    # Convert back to string in "YYYY-MM-DD" format
-    return next_day.strftime("%Y-%m-%d")
+    # 다음날 날짜를 계산
+    return (date_obj + timedelta(days=1)).strftime('%Y-%m-%d')
 
 
 def get_logical_date(context):
