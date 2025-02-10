@@ -1,7 +1,7 @@
-*_test.py
-*_dev.py
-test_*.py
-dev_*.py
+.*_test\.py$
+.*_dev\.py$
+test_.*\.py$
+dev_.*\.py$
+\.pytest_cache/
 __pycache__/
-*.pyc
-.pytest_cache/
+.*\.pyc
