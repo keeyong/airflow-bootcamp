@@ -1,31 +1,34 @@
-# In Cloud Composer, add apache-airflow-providers-snowflake to PYPI Packages
 from airflow import DAG
 from airflow.models import Variable
 from airflow.decorators import task
 from airflow.operators.python import get_current_context
-from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
 
 from datetime import datetime, timedelta
 from helpers import util
 
+import os
 import pandas as pd
 import yfinance as yf
 
 
 @task
 def extract(symbol, debug=True):
-    date_to_process = str(util.get_logical_date(get_current_context()))[:10]  # Airflow에게 어느 날짜의 데이터를 읽을지 문의
+
+    # Airflow에게 어느 날짜의 데이터를 읽을지 문의
+    date_to_process = str(util.get_logical_date(get_current_context()))[:10]
     following_day = util.get_next_day(date_to_process)   # 그 다음날 계산
 
-    # date_to_process의 값을 읽어와서 data 데이터프레임에 저장
     if debug:
         print(date_to_process, following_day)
+
+    # date_to_process의 값을 읽어와서 data 데이터프레임에 저장
     data = yf.download(symbol, start=date_to_process, end=following_day)
+    # 'symbol' 컬럼을 추가하고 모든 행에 symbol 값 할당
+    data['symbol'] = symbol
 
     """
     data 데이터프레임 내용 클린업
     """
-    data.reset_index(inplace=True, names=['Date'])
     data.columns = data.columns.droplevel(1)  # symbol 하나만 다루기에 ticker 레벨 제거
     if debug:
         print(data.head())
@@ -35,7 +38,7 @@ def extract(symbol, debug=True):
     """
     tmp_dir = Variable.get("data_dir", "/tmp/")
     file_path = util.get_file_path(tmp_dir, symbol, get_current_context())
-    data.to_csv(file_path, index=False)  # 데이터를 CSV로 저장
+    data.to_csv(file_path)  # 데이터를 CSV로 저장
 
     return file_path  # 파일 경로만 반환
 
@@ -76,6 +79,14 @@ def load(symbol, schema, table):
         cur.execute("ROLLBACK;")
         print(e)
         raise e
+    finally:
+        # file_path에서 파일 이름만 추출
+        file_name = os.path.basename(file_path)
+        # 스테이지에 올린 파일을 삭제
+        table_stage = f"@%{table}"
+        cur.execute(f"REMOVE {table_stage}/{file_name}")
+        # 연결 닫기
+        cur.close()
 
 
 with DAG(
@@ -84,11 +95,11 @@ with DAG(
     start_date=datetime(2025,1,14),
     catchup=False,
     tags=['ETL', 'incremental'],
-    schedule='30 1 * * *'
+    schedule='45 1 * * *'
 ) as dag:
 
     schema = "raw_data"
     table = "stock_price"
-    symbol = "AAPL"
+    symbol = "NVDA"
 
     extract(symbol) >> load(symbol, schema, table)
