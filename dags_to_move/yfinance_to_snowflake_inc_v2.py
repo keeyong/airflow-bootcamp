@@ -13,9 +13,10 @@ import yfinance as yf
 
 @task
 def extract(symbol, debug=True):
+    context = get_current_context()
 
     # Airflow에게 어느 날짜의 데이터를 읽을지 문의
-    date_to_process = str(get_current_context()['logical_date'])[:10]
+    date_to_process = str(context['logical_date'])[:10]
     following_day = util.get_next_day(date_to_process)   # 그 다음날 계산
 
     if debug:
@@ -46,14 +47,13 @@ def extract(symbol, debug=True):
 @task
 def load(symbol, schema, table):
     cur = util.return_snowflake_conn("snowflake_conn")
+    context = get_current_context()
 
-    date_to_process = str(get_current_context()['logical_date'])[:10]
-    
+    date_to_process = str(context['logical_date'])[:10]
     tmp_dir = Variable.get("data_dir", "/tmp/")
     file_path = util.get_file_path(tmp_dir, symbol, get_current_context())
 
     """ Airflow의 읽어올 데이터의 날짜와 시간 관리를 위해 몇 개의 DAG RUN 변수 출력 """
-    context = get_current_context()
     print("logical_date", context["logical_date"])
     print("data_interval_start", context["data_interval_start"])
     print("data_interval_end", context["data_interval_end"])
