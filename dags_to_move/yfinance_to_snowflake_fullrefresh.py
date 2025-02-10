@@ -9,7 +9,6 @@ from helpers import util
 import logging
 import os
 import pandas as pd
-import pytz
 import yfinance as yf
 
 
