@@ -1,8 +1,7 @@
-*.ipynb
+*_test.py
+*_dev.py
 test_*.py
-*.swp
-*.bak
-*.log
-*.csv
-*.md
-*.json
+dev_*.py
+__pycache__/
+*.pyc
+.pytest_cache/
