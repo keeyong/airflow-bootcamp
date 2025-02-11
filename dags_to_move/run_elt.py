@@ -28,12 +28,14 @@ TABLES = [
 
 
 def count_table(cur, table):
+    """ 주어진 테이블의 레코드 수를 리턴 """
     cur.execute(f"""SELECT COUNT(1) FROM {table}""")
 
     return cur.fetchone()[0]
 
 
 def is_primary_key_uniquenss(cur, table, primary_key):
+    """ 주어진 테이블의 기본키가 지켜지는지 리턴 """
     sql = f"""SELECT {primary_key}, COUNT(1) AS cnt
 FROM {table} 
 GROUP BY 1 
@@ -45,7 +47,12 @@ LIMIT 1"""
 
 @task
 def runCTAS(table_params):
-
+    """ 
+    1. 임시 테이블을 주어진 SELECT 문('sql')으로 생성 (CTAS)
+    2. 2개의 품질 체크 수행 (레코드 수가 0보다 큰가? 기본키가 지켜지는가?)
+    3. 타겟 테이블이 존재하지 않는다면 생성
+    4. 임시 테이블과 타겟 테이블을 교환 (SWAP)
+    """
     schema = table_params['schema'] 
     table = table_params['table']
     select_sql = table_params['sql']
@@ -71,6 +78,7 @@ def runCTAS(table_params):
         raise AirflowException(f"{schema}.{table} doesn't guarantee primary key uniqueness")
 
     # 테이블 SWAP 명령을 사용할 예정이라 타겟 테이블이 없는 경우를 대비해서 없으면 하나 만들어둠
+    # WHERE 1=0을 항상 거짓이기에 아무런 레코드 없이 뼈대만 동일한 타겟 테이블이 만들어짐
     main_table_creation_if_not_exists_sql = f"""
         CREATE TABLE IF NOT EXISTS {schema}.{table} AS
         SELECT * FROM {schema}.temp_{table} WHERE 1=0;"""
