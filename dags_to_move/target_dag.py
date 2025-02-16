@@ -2,15 +2,13 @@ from airflow import DAG
 from airflow.operators.bash import BashOperator
 from datetime import datetime
 
-dag = DAG(
+with DAG(
     'TargetDag',
-    schedule='@once',  # 매일 실행
+    schedule='@once',  # 스케줄을 세팅하지 않음
     catchup=False,
     start_date=datetime(2025, 1, 19),
-)
-
-task1 = BashOperator(
-    task_id='task1',
-    bash_command="""echo '{{ ds }}, {{ dag_run.conf.get("path", "none") }}' """,
-    dag=dag
-)
+) as dag:
+    task1 = BashOperator(
+        task_id='task1',
+        bash_command="""echo '{{ ds }}, {{ dag_run.conf.get("path", "none") }}' """
+    )
