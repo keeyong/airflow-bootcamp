@@ -12,7 +12,7 @@ with DAG(
 ) as dag:
     t1 = BashOperator(task_id="print_date", bash_command="date")
     t2 = BashOperator(task_id="sleep", bash_command="sleep 5")
-    t3 = BashOperator(task_id="exit", bash_command="exit 1")
+    t3 = BashOperator(task_id="always_fail", bash_command="exit 1")
     t4 = BashOperator(
         task_id='final_task',
         bash_command='echo DONE!',
