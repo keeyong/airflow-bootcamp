@@ -6,7 +6,7 @@ from datetime import datetime
 
 def check_weekend(**context):
     # 실행 날짜의 요일을 확인 (0:월요일 ~ 6:일요일)
-    execution_date = context['execution_date']
+    execution_date = context['logical_date']
     weekday = execution_date.weekday()
     
     # 요일 이름 매핑
