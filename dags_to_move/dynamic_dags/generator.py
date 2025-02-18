@@ -6,11 +6,13 @@ import yaml
 file_dir = os.path.dirname(os.path.abspath(__file__))
 print(file_dir)    # generator.py가 위치한 폴더를 출력함
 
-# jinja2 템플릿 엔진을 사용하기 위해 Environment와 FileSystemLoader 설정
-# FileSystemLoader에 file_dir를 지정하면, 해당 디렉토리에서 템플릿 파일 검색
+# jinja2 템플릿 엔진 환경을 설정합니다 (Environment)
+# file_dir이 가르키는 위치에서 템플릿 파일을 찾도록 FileSystemLoader를 설정
+# env 객체를 통해 템플릿 관련 작업을 수행 가능
 env = Environment(loader=FileSystemLoader(file_dir))
 
 # templated_dag.jinja2 템플릿 파일 로딩
+# 뒤에서 template.render로 템플릿의 내용을 채우게 됨
 template = env.get_template('templated_dag.jinja2')
 
 # file_dir 내에 있는 모든 파일을 하나씩 읽어서 루프
