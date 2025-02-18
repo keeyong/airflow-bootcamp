@@ -4,6 +4,7 @@ import yaml
 
 # 현재 파일(__file__)의 절대 경로를 기준으로, 해당 파일이 위치한 디렉토리 파악
 file_dir = os.path.dirname(os.path.abspath(__file__))
+print(file_dir)    # generator.py가 위치한 폴더를 출력함
 
 # jinja2 템플릿 엔진을 사용하기 위해 Environment와 FileSystemLoader 설정
 # FileSystemLoader에 file_dir를 지정하면, 해당 디렉토리에서 템플릿 파일 검색
