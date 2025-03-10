@@ -78,4 +78,4 @@ with DAG(
     table = "stock_price"
     symbol = "NVDA"
 
-    extract(symbol) >> load(file_path, symbol, schema, table)
+    extract(symbol) >> load(symbol, schema, table)
