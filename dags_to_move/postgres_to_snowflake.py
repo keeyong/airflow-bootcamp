@@ -7,6 +7,8 @@ from datetime import datetime, timedelta
 
 from helpers import util
 
+import os
+
 
 # Table configurations
 TABLES = {
