@@ -21,5 +21,11 @@ with DAG(
     update_gsheet(
         "구글스프레드시트-테스팅",
         "SnowflakeToSheet",
-        "SELECT * FROM dev.analytics.mau_summary"
+        """
+SELECT 
+  LEFT(created, 7) month,   
+  AVG(score) nps
+FROM dev.raw_data.nps
+GROUP BY 1
+ORDER BY 1;"""
     )
