@@ -6,10 +6,9 @@
 from airflow import DAG
 from airflow.decorators import task
 from airflow.models import Variable
-from airflow.operators.python import PythonOperator
+from airflow.operators.python import get_current_context
 
 from datetime import datetime
-from datetime import timedelta
 from helpers import gsheet
 from helpers import util
 
@@ -23,7 +22,7 @@ import json
 def download_tab_in_gsheet(url, tab, schema, table):
     tmp_dir = Variable.get("data_dir")  # ends with "/"
     sheet_api_credential_key = "google_sheet_access_token"
-    file_path = f"{tmp_dir}{table}.csv"
+    file_path = util.get_file_path(tmp_dir, table, get_current_context())
 
     gsheet.get_google_sheet_to_csv(
         url,
