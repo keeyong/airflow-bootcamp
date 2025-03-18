@@ -21,5 +21,5 @@ with DAG(
     update_gsheet(
         "구글스프레드시트-테스팅",
         "SnowflakeToSheet",
-        "SELECT * FROM dev.raw_data.gsheet_copy"
+        "SELECT * FROM dev.analytics.mau_summary"
     )
