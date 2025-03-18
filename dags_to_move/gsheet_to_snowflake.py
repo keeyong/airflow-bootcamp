@@ -47,7 +47,7 @@ def download_tab_in_gsheet(url, tab, schema, table):
 
         cur.execute("BEGIN;")
         cur.execute(f"DELETE FROM {schema}.{table}")
-        # 먼저 staging 테이블의 내용을 채운다. COPY INTO 사용
+        # Stage와 COPY INTO를 사용하여 앞서 구글 시트로부터 다운로드 받은 파일을 테이블로 적재
         util.populate_table_via_stage(cur, table, file_path)     
         cur.execute("COMMIT;")
     except Exception as e:
